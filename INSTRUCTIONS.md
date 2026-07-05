@@ -13,7 +13,7 @@ These rules govern how the parent agent should use the bundled subagents. They e
 ## Config invariants
 
 - `context7` in `mcp.json` must NOT contain `"transport"` or `"lifecycle"` fields — they are non-standard and not read by Pi. Use `"command"`/`"args"` (stdio is implied) or `"type": "streamable-http"` for remote servers.
-- Pi's MCP extension reads `<project-root>/mcp.json` and `~/.pi/agent/mcp.json` only — it does NOT read `.pi/mcp.json`. The bundle's `mcp.json` must be symlinked to the project root (`ln -s .pi/mcp.json mcp.json`).
+- Pi's MCP extension reads `<project-root>/mcp.json` and `~/.pi/agent/mcp.json` only — it does NOT read anything inside `.pi/`. The bundle ships `mcp.example.json`; each project copies it to its root (`cp .pi/mcp.example.json mcp.json`) and owns the copy.
 - `tools` arrays in `.pi/settings.json` must be JSON arrays of strings, never comma-separated strings.
 - Pi does NOT auto-load `.env` files. Env vars must be exported before launching `pi` (`set -a; . ./.env; set +a`, `direnv`, or inline `VAR=val pi`).
 

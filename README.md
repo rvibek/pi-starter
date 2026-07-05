@@ -44,7 +44,7 @@ pi-starter/                  ← This repo — mounts as .pi/ in your project
 ├── .gitignore              ← Ignores .pi-subagents/ artifacts, .env, logs, OS junk
 ├── .env.example            ← Template for CONTEXT7_API_KEY (copy to project root as .env)
 ├── INSTRUCTIONS.md         ← Delegation rules & config invariants (inherited by parent session)
-├── mcp.json                ← Project-local MCP servers (context7 + yours)
+├── mcp.example.json        ← MCP server config source — copy to project root as mcp.json
 ├── settings.json           ← Subagent model routing & overrides
 └── agents/
     ├── scout.md            ← Fast codebase recon (read-only, cheap model)
@@ -52,7 +52,7 @@ pi-starter/                  ← This repo — mounts as .pi/ in your project
     └── reviewer.md         ← Code review specialist (read-only)
 ```
 
-Once mounted at `.pi/`, your project sees `.pi/agents/`, `.pi/mcp.json`, `.pi/settings.json` — the paths Pi auto-discovers.
+Once mounted at `.pi/`, your project sees `.pi/agents/` and `.pi/settings.json` — paths Pi auto-discovers. MCP config is the one exception: Pi only reads `<project-root>/mcp.json`, so you copy `mcp.example.json` there (next section).
 
 > **Note:** running subagents creates a `.pi-subagents/` folder (run transcripts and metadata) in the project root. It's regenerated runtime output — add it to your project's `.gitignore`.
 
@@ -94,15 +94,15 @@ mkdir -p .pi
 curl -sL https://github.com/rvibek/pi-starter/tarball/main | tar -xz --strip=1 -C .pi
 ```
 
-### After install (all options): expose mcp.json
+### After install (all options): create your project mcp.json
 
-Pi reads project MCP config from `<project-root>/mcp.json`, not from `.pi/`. Symlink it once:
+Pi reads project MCP config from `<project-root>/mcp.json`, not from `.pi/`. Copy the bundled example once:
 
 ```bash
-ln -s .pi/mcp.json mcp.json
+cp .pi/mcp.example.json mcp.json
 ```
 
-Agents and settings need no such step — Pi discovers `.pi/agents/` and `.pi/settings.json` directly.
+The copy is yours — add project-specific servers to it freely; template updates won't touch it. Agents and settings need no such step — Pi discovers `.pi/agents/` and `.pi/settings.json` directly.
 
 ---
 
@@ -132,7 +132,7 @@ Subagents are focused child Pi sessions. They keep your main context clean.
 ### Dogfood: review this template with itself
 
 ```text
-> Use scout to map the repo, reviewer to audit .pi/mcp.json and .pi/settings.json, then brief me.
+> Use scout to map the repo, reviewer to audit mcp.json and .pi/settings.json, then brief me.
 ```
 
 That's the loop: **scout finds → reviewer checks → you synthesise.** The same line works for any codebase you pull this bundle into — recon, audit, brief. It's also the cheapest way to make sure you (or your parent agent) actually delegate instead of reading 10 files solo.
@@ -182,20 +182,20 @@ Pi's MCP extension reads exactly two config files:
 1. `~/.pi/agent/mcp.json` — global
 2. **`<project-root>/mcp.json`** — project-local (note: project root, **not** `.pi/`)
 
-The bundle ships `mcp.json`, but after mounting at `.pi/` it sits at `.pi/mcp.json` where Pi won't look. **One-time step after install** — symlink it to the project root:
+The bundle ships `mcp.example.json` as a starting point — copy it to the project root once and edit the copy per project:
 
 ```bash
 cd your-project
-ln -s .pi/mcp.json mcp.json
+cp .pi/mcp.example.json mcp.json
 ```
 
-(Or copy it, if you want project-specific edits that don't track the template.) On first launch Pi asks to trust the project `mcp.json` — accept.
+On first launch Pi asks to trust the project `mcp.json` — accept.
 
 ### context7 server
 
 The template ships with `context7` — a remote knowledge/context MCP server accessed via [mcp-remote](https://www.npmjs.com/package/mcp-remote).
 
-**No changes needed** — the config in `.pi/mcp.json` is ready to use. But Pi reads **`process.env` directly** — it does not auto-load `.env` files. So you must export the variable before launching Pi:
+**No config edits needed** — the copied `mcp.json` is ready to use. But Pi reads **`process.env` directly** — it does not auto-load `.env` files. So you must export the variable before launching Pi:
 
 ```bash
 # Option A: copy the example into your project root, then export it in your shell
@@ -308,7 +308,7 @@ git submodule update --remote .pi
 Fork this repo, then (paths are repo-root here — they appear under `.pi/` once mounted in a project):
 
 - **Add agents** — create `agents/<name>.md`
-- **Add MCP servers** — edit `mcp.json`
+- **Add MCP servers** — edit `mcp.example.json`
 - **Tweak models/thinking** — edit `settings.json`
 - **Add project-local skills** — create `skills/<name>/SKILL.md`
 - **Update documentation** — edit this `README.md`
@@ -325,7 +325,7 @@ pi-starter/                   ← Repo root == the bundle — mounts at .pi/ in 
 ├── .gitignore               ← .pi-subagents/ artifacts, .env, logs, OS junk
 ├── .env.example             ← CONTEXT7_API_KEY template (copy to project root as .env)
 ├── INSTRUCTIONS.md          ← Delegation rules & config invariants
-├── mcp.json                 ← Project-local MCP servers
+├── mcp.example.json         ← MCP config source — copy to project root as mcp.json
 ├── settings.json            ← Subagent overrides
 └── agents/
     ├── scout.md             ← Codebase recon agent
