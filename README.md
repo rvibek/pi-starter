@@ -65,7 +65,7 @@ pi-starter/                  ← This repo (visible on GitHub)
 
 ```bash
 cd your-project
-git submodule add https://github.com/YOU/pi-starter.git .pi
+git submodule add https://github.com/rvibek/pi-starter.git .pi
 git submodule init
 ```
 
@@ -83,7 +83,7 @@ git submodule update --init
 
 ```bash
 cd your-project
-git clone https://github.com/YOU/pi-starter.git /tmp/pi-starter
+git clone https://github.com/rvibek/pi-starter.git /tmp/pi-starter
 cp -r /tmp/pi-starter/.pi .
 rm -rf /tmp/pi-starter
 ```
@@ -93,7 +93,7 @@ rm -rf /tmp/pi-starter
 ```bash
 cd your-project
 mkdir -p .pi
-curl -sL https://github.com/YOU/pi-starter/tarball/main | tar -xz --strip=2 -C .pi '*/.pi/'
+curl -sL https://github.com/rvibek/pi-starter/tarball/main | tar -xz --strip=2 -C .pi '*/.pi/'
 ```
 
 ---
@@ -271,7 +271,7 @@ Pi auto-discovers them. Use via `/skill:my-skill` in the editor. The template do
 git init
 git add .
 git commit -m "Initial Pi starter — subagents, MCP, settings"
-git remote add origin https://github.com/YOU/pi-starter.git
+git remote add origin https://github.com/rvibek/pi-starter.git
 git push -u origin main
 ```
 
