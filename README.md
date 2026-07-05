@@ -94,6 +94,16 @@ mkdir -p .pi
 curl -sL https://github.com/rvibek/pi-starter/tarball/main | tar -xz --strip=1 -C .pi
 ```
 
+### After install (all options): expose mcp.json
+
+Pi reads project MCP config from `<project-root>/mcp.json`, not from `.pi/`. Symlink it once:
+
+```bash
+ln -s .pi/mcp.json mcp.json
+```
+
+Agents and settings need no such step — Pi discovers `.pi/agents/` and `.pi/settings.json` directly.
+
 ---
 
 ## 🧠 Subagents
@@ -167,14 +177,19 @@ No registration needed — Pi auto-discovers `.md` files in that folder.
 
 ## 🔌 MCP Servers
 
-Project-local MCP servers go in `.pi/mcp.json`. They **merge** with your global config (`~/.pi/agent/mcp.json`).
+Pi's MCP extension reads exactly two config files:
 
-### Discovery order (right wins conflicts)
+1. `~/.pi/agent/mcp.json` — global
+2. **`<project-root>/mcp.json`** — project-local (note: project root, **not** `.pi/`)
 
-1. `~/.mcp.json` — shared global
-2. `~/.pi/agent/mcp.json` — Pi global
-3. `<project>/.mcp.json` — shared project-root
-4. **`<project>/.pi/mcp.json`** ← this template
+The bundle ships `mcp.json`, but after mounting at `.pi/` it sits at `.pi/mcp.json` where Pi won't look. **One-time step after install** — symlink it to the project root:
+
+```bash
+cd your-project
+ln -s .pi/mcp.json mcp.json
+```
+
+(Or copy it, if you want project-specific edits that don't track the template.) On first launch Pi asks to trust the project `mcp.json` — accept.
 
 ### context7 server
 
