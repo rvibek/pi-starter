@@ -1,0 +1,12 @@
+# Runtime artifacts from the pi-subagents extension (transcripts, run meta)
+.pi-subagents/
+
+# Local Claude Code config — this template is Pi-only
+.claude/
+
+# Local secrets — commit .env.example, never .env
+.env
+
+# OS junk
+.DS_Store
+Thumbs.db

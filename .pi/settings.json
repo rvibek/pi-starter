@@ -1,0 +1,23 @@
+{
+  "subagents": {
+    "defaultModel": "opencode-go/deepseek-v4-flash",
+    "agentOverrides": {
+      "scout": {
+        "model": "opencode-go/deepseek-v4-flash",
+        "thinking": "off",
+        "fallbackModels": ["opencode-go/mimo-v2.5"]
+      },
+      "worker": {
+        "model": "opencode-go/kimi-k2.7-code",
+        "thinking": "medium",
+        "fallbackModels": ["opencode-go/deepseek-v4-pro"],
+        "tools": ["read", "grep", "find", "ls", "bash", "edit", "write", "subagent"]
+      },
+      "reviewer": {
+        "model": "opencode-go/glm-5.2",
+        "thinking": "high",
+        "fallbackModels": ["opencode-go/deepseek-v4-pro"]
+      }
+    }
+  }
+}
