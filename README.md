@@ -1,8 +1,8 @@
 # 🧩 Pi Starter
 
-**Portable Pi agent resources — subagents, MCP servers, and settings — bundled into a `.pi/` folder you can pull into any project.**
+**Portable Pi agent resources — subagents, MCP servers, and settings — a repo you mount as the `.pi/` folder of any project.**
 
-View this repo on GitHub? You're looking at the right place. The good stuff is inside [`.pi/`](./.pi/).
+This repo root **is** the bundle: submodule or copy it to `<your-project>/.pi/` and everything lands exactly where Pi looks for it.
 
 ---
 
@@ -39,21 +39,20 @@ After that, pull this `.pi/` bundle into any project on that machine and the age
 ## 📦 Structure
 
 ```
-pi-starter/                  ← This repo (visible on GitHub)
+pi-starter/                  ← This repo — mounts as .pi/ in your project
 ├── README.md               ← You are here
-├── .gitignore              ← Ignores .pi-subagents/ runtime artifacts, .env
-├── .env.example            ← Template for CONTEXT7_API_KEY (copy to .env)
-├── .pi/                    ← 👈 The resource bundle — pull this into projects
-│   ├── README.md           ← Brief in-project reference
-│   ├── INSTRUCTIONS.md     ← Delegation rules & config invariants (inherited by parent session)
-│   ├── .gitignore          ← Ignores MCP data, logs, OS junk
-│   ├── mcp.json            ← Project-local MCP servers (context7 + yours)
-│   ├── settings.json       ← Subagent model routing & overrides
-│   └── agents/
-│       ├── scout.md        ← Fast codebase recon (read-only, cheap model)
-│       ├── worker.md       ← General-purpose implementation agent
-│       └── reviewer.md     ← Code review specialist (read-only)
+├── .gitignore              ← Ignores .pi-subagents/ artifacts, .env, logs, OS junk
+├── .env.example            ← Template for CONTEXT7_API_KEY (copy to project root as .env)
+├── INSTRUCTIONS.md         ← Delegation rules & config invariants (inherited by parent session)
+├── mcp.json                ← Project-local MCP servers (context7 + yours)
+├── settings.json           ← Subagent model routing & overrides
+└── agents/
+    ├── scout.md            ← Fast codebase recon (read-only, cheap model)
+    ├── worker.md           ← General-purpose implementation agent
+    └── reviewer.md         ← Code review specialist (read-only)
 ```
+
+Once mounted at `.pi/`, your project sees `.pi/agents/`, `.pi/mcp.json`, `.pi/settings.json` — the paths Pi auto-discovers.
 
 > **Note:** running subagents creates a `.pi-subagents/` folder (run transcripts and metadata) in the project root. It's regenerated runtime output — add it to your project's `.gitignore`.
 
@@ -83,17 +82,16 @@ git submodule update --init
 
 ```bash
 cd your-project
-git clone https://github.com/rvibek/pi-starter.git /tmp/pi-starter
-cp -r /tmp/pi-starter/.pi .
-rm -rf /tmp/pi-starter
+git clone --depth 1 https://github.com/rvibek/pi-starter.git .pi
+rm -rf .pi/.git
 ```
 
-### Option 3: Fetch just the `.pi/` folder via tarball
+### Option 3: Fetch via tarball (no git)
 
 ```bash
 cd your-project
 mkdir -p .pi
-curl -sL https://github.com/rvibek/pi-starter/tarball/main | tar -xz --strip=2 -C .pi '*/.pi/'
+curl -sL https://github.com/rvibek/pi-starter/tarball/main | tar -xz --strip=1 -C .pi
 ```
 
 ---
@@ -185,14 +183,12 @@ The template ships with `context7` — a remote knowledge/context MCP server acc
 **No changes needed** — the config in `.pi/mcp.json` is ready to use. But Pi reads **`process.env` directly** — it does not auto-load `.env` files. So you must export the variable before launching Pi:
 
 ```bash
-# Option A: copy the example, then export it in your shell
-cp .env.example .env
+# Option A: copy the example into your project root, then export it in your shell
+cp .pi/.env.example .env
 # edit .env with your real key, then:
 set -a; . ./.env; set +a
 pi
 ```
-
-> `.env.example` lives at this template's root, so it comes along with Options 2/3 above. If you installed via **git submodule** (Option 1), only `.pi/` is pulled in — create `.env` in your project root by hand with `CONTEXT7_API_KEY=ctx7sk-xxxxxxxx`.
 
 ```bash
 # Option B: inline for a single session
@@ -294,12 +290,12 @@ git submodule update --remote .pi
 
 ## 🔧 Extending the template
 
-Fork this repo, then:
+Fork this repo, then (paths are repo-root here — they appear under `.pi/` once mounted in a project):
 
-- **Add agents** — create `.pi/agents/<name>.md`
-- **Add MCP servers** — edit `.pi/mcp.json`
-- **Tweak models/thinking** — edit `.pi/settings.json`
-- **Add project-local skills** — create `.pi/skills/<name>/SKILL.md`
+- **Add agents** — create `agents/<name>.md`
+- **Add MCP servers** — edit `mcp.json`
+- **Tweak models/thinking** — edit `settings.json`
+- **Add project-local skills** — create `skills/<name>/SKILL.md`
 - **Update documentation** — edit this `README.md`
 
 Submit a PR if you think others would benefit!
@@ -309,20 +305,17 @@ Submit a PR if you think others would benefit!
 ## 📁 Full reference
 
 ```
-pi-starter/                   ← Template repo root — push this to GitHub
-├── README.md                ← This file — visible on repo homepage
-├── .gitignore               ← .pi-subagents/ artifacts, .env, OS junk
-├── .env.example             ← CONTEXT7_API_KEY template
-└── .pi/                     ← Resource bundle — pull into any project
-    ├── README.md            ← In-project quick reference
-    ├── INSTRUCTIONS.md      ← Delegation rules & config invariants
-    ├── .gitignore           ← MCP data, logs, OS junk
-    ├── mcp.json             ← Project-local MCP servers
-    ├── settings.json        ← Subagent overrides
-    └── agents/
-        ├── scout.md         ← Codebase recon agent
-        ├── worker.md        ← Implementation agent
-        └── reviewer.md      ← Code review agent
+pi-starter/                   ← Repo root == the bundle — mounts at .pi/ in your project
+├── README.md                ← This file — visible on repo homepage and in .pi/
+├── .gitignore               ← .pi-subagents/ artifacts, .env, logs, OS junk
+├── .env.example             ← CONTEXT7_API_KEY template (copy to project root as .env)
+├── INSTRUCTIONS.md          ← Delegation rules & config invariants
+├── mcp.json                 ← Project-local MCP servers
+├── settings.json            ← Subagent overrides
+└── agents/
+    ├── scout.md             ← Codebase recon agent
+    ├── worker.md            ← Implementation agent
+    └── reviewer.md          ← Code review agent
 ```
 
 ---
